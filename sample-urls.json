@@ -1,0 +1,32 @@
+[
+  {
+    "name": "Google",
+    "url": "https://www.google.com",
+    "checkInterval": 5,
+    "alertEnabled": true
+  },
+  {
+    "name": "GitHub",
+    "url": "https://www.github.com",
+    "checkInterval": 5,
+    "alertEnabled": true
+  },
+  {
+    "name": "Cloudflare",
+    "url": "https://www.cloudflare.com",
+    "checkInterval": 5,
+    "alertEnabled": true
+  },
+  {
+    "name": "Wikipedia Missing Page (404 Down Test)",
+    "url": "https://en.wikipedia.org/saecs/Saweascasce",
+    "checkInterval": 5,
+    "alertEnabled": true
+  },
+  {
+    "name": "HTTP Status 500 Test Endpoint",
+    "url": "https://httpstat.us/500",
+    "checkInterval": 5,
+    "alertEnabled": true
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "name": "url-health-observability-platform",
+  "version": "1.0.0",
+  "description": "URL Health & Observability Platform - Full-stack assignment project",
+  "scripts": {
+    "install:all": "npm --prefix backend install && npm --prefix frontend install",
+    "dev:backend": "npm --prefix backend run dev",
+    "dev:frontend": "npm --prefix frontend run dev",
+    "test": "npm --prefix backend test",
+    "build:frontend": "npm --prefix frontend run build"
+  }
+}

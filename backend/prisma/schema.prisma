@@ -1,0 +1,52 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:./dev.db"
+}
+
+model User {
+  id           String         @id @default(uuid())
+  email        String         @unique
+  passwordHash String
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+  urls         MonitoredURL[]
+
+  @@map("users")
+}
+
+model MonitoredURL {
+  id            String        @id @default(uuid())
+  userId        String
+  name          String
+  url           String
+  checkInterval Int           @default(5) // interval in minutes
+  isActive      Boolean       @default(true)
+  alertEnabled  Boolean       @default(true)
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  user          User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  checkResults  CheckResult[]
+
+  @@index([userId])
+  @@map("monitored_urls")
+}
+
+model CheckResult {
+  id           String       @id @default(uuid())
+  urlId        String
+  status       String       // "UP" or "DOWN"
+  statusCode   Int?
+  responseTime Int          // in milliseconds
+  errorMessage String?
+  checkedAt    DateTime     @default(now())
+  monitoredUrl MonitoredURL @relation(fields: [urlId], references: [id], onDelete: Cascade)
+
+  @@index([urlId])
+  @@index([checkedAt])
+  @@index([urlId, checkedAt])
+  @@map("check_results")
+}

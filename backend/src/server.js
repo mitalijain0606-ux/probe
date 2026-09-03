@@ -13,7 +13,30 @@ const server = app.listen(config.port, () => {
 
   // Start scheduled health check cron
   startMonitoringScheduler();
+
+  // Ensure demo user exists in deployed environment
+  ensureDemoUser();
 });
+
+async function ensureDemoUser() {
+  try {
+    const prisma = require('./utils/prisma');
+    const bcrypt = require('bcryptjs');
+    const demo = await prisma.user.findUnique({ where: { email: 'demo@healthwatch.io' } });
+    if (!demo) {
+      const passwordHash = await bcrypt.hash('demoPass123!', 10);
+      await prisma.user.create({
+        data: {
+          email: 'demo@healthwatch.io',
+          passwordHash,
+        },
+      });
+      logger.info({ event: 'demo_user_auto_seeded', email: 'demo@healthwatch.io' });
+    }
+  } catch (err) {
+    logger.warn({ event: 'demo_user_seed_check_skipped', error: err.message });
+  }
+}
 
 // Graceful shutdown handling
 function handleShutdown(signal) {

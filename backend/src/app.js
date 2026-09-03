@@ -12,13 +12,19 @@ const dashboardRoutes = require('./routes/dashboardRoutes');
 
 const app = express();
 
-// Security HTTP headers
-app.use(helmet());
+// Trust reverse proxy hops (Render, Railway, Heroku, Cloudflare, etc.)
+app.set('trust proxy', 1);
 
 // Cross-Origin Resource Sharing
 app.use(cors({
   origin: true, // Allow frontend dev server and production origins
   credentials: true,
+}));
+app.options('*', cors());
+
+// Security HTTP headers
+app.use(helmet({
+  crossOriginResourcePolicy: { policy: 'cross-origin' },
 }));
 
 // Body parsers (supporting up to 5MB for JSON batch imports)

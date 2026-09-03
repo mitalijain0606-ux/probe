@@ -2,7 +2,7 @@ import axios, { AxiosError } from 'axios';
 import type { ApiFailure } from '@/types/api';
 
 export const http = axios.create({
-  baseURL: '/api',
+  baseURL: `${import.meta.env.VITE_API_URL}/api`,
   withCredentials: true,
   headers: { 'Content-Type': 'application/json' },
 });

@@ -25,14 +25,8 @@ export function LoginPage() {
   const {
     register,
     handleSubmit,
-    setValue,
     formState: { errors },
   } = useForm<LoginFormValues>({ resolver: zodResolver(loginFormSchema) });
-
-  const fillAdminCredentials = () => {
-    setValue('email', 'admin@urlwatch.dev', { shouldValidate: true });
-    setValue('password', 'Admin@123', { shouldValidate: true });
-  };
 
   const onSubmit = async (values: LoginFormValues) => {
     setIsSubmitting(true);
@@ -64,10 +58,13 @@ export function LoginPage() {
 
         <div className="rounded-2xl border border-blue-100 bg-white/80 p-8 shadow-2xl shadow-blue-200/50 backdrop-blur-xl">
           <div className="mb-8 flex flex-col items-center gap-2">
-            <Link to="/" className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-white transition-transform hover:scale-105" title="Go to home">
-              <ProbeLogo className="h-5 w-5" />
+            <Link to="/" className="flex items-center gap-2.5 group cursor-pointer transition-transform hover:scale-105" title="Go to home">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-white shadow-md shadow-blue-200">
+                <ProbeLogo className="h-5 w-5" />
+              </div>
+              <span className="text-2xl font-bold tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors">Probe</span>
             </Link>
-            <h1 className="text-xl font-semibold text-slate-900">Sign in to Probe</h1>
+            <h1 className="text-lg font-semibold text-slate-900 mt-1">Sign in to your account</h1>
             <p className="text-sm text-slate-500">Monitor the health of your URLs in real time</p>
           </div>
 
@@ -102,18 +99,7 @@ export function LoginPage() {
             </Button>
           </form>
 
-          <div className="mt-4 border-t border-blue-100 pt-4 flex flex-col items-center gap-1.5">
-            <span className="text-[11px] text-slate-400">Quick Test / Evaluation:</span>
-            <button
-              type="button"
-              onClick={fillAdminCredentials}
-              className="inline-flex items-center gap-1.5 rounded-lg bg-blue-50 hover:bg-blue-100 px-3 py-1.5 text-xs font-medium text-blue-600 transition-colors"
-            >
-              Fill Admin Credentials (admin@urlwatch.dev)
-            </button>
-          </div>
-
-          <p className="mt-5 text-center text-sm text-slate-500">
+          <p className="mt-6 text-center text-sm text-slate-500">
             {"Don't have an account? "}
             <Link to="/register" className="font-medium text-blue-600 hover:underline">
               Create one

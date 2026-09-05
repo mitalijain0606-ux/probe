@@ -58,10 +58,13 @@ export function RegisterPage() {
 
         <div className="rounded-2xl border border-blue-100 bg-white/80 p-8 shadow-2xl shadow-blue-200/50 backdrop-blur-xl">
           <div className="mb-8 flex flex-col items-center gap-2">
-            <Link to="/" className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-white transition-transform hover:scale-105" title="Go to home">
-              <ProbeLogo className="h-5 w-5" />
+            <Link to="/" className="flex items-center gap-2.5 group cursor-pointer transition-transform hover:scale-105" title="Go to home">
+              <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-white shadow-md shadow-blue-200">
+                <ProbeLogo className="h-5 w-5" />
+              </div>
+              <span className="text-2xl font-bold tracking-tight text-slate-900 group-hover:text-blue-600 transition-colors">Probe</span>
             </Link>
-            <h1 className="text-xl font-semibold text-slate-900">Create your account</h1>
+            <h1 className="text-lg font-semibold text-slate-900 mt-1">Create your account</h1>
             <p className="text-sm text-slate-500">Start monitoring URLs in under a minute</p>
           </div>
 

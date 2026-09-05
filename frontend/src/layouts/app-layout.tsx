@@ -1,4 +1,4 @@
-import { NavLink, Outlet } from 'react-router-dom';
+import { Link, NavLink, Outlet } from 'react-router-dom';
 import { LayoutDashboard, LogOut, ShieldCheck } from 'lucide-react';
 import { useAuth } from '@/features/auth/auth-context';
 import { Button } from '@/components/ui/button';
@@ -13,8 +13,8 @@ export function AppLayout() {
     <div className="min-h-screen bg-background">
       <header className="sticky top-0 z-40 border-b border-border bg-background/80 backdrop-blur">
         <div className="container flex h-14 items-center justify-between">
-          <NavLink
-            to="/dashboard"
+          <Link
+            to="/"
             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
             className="flex items-center gap-2 font-semibold tracking-tight hover:opacity-90 transition-opacity cursor-pointer"
           >
@@ -22,7 +22,7 @@ export function AppLayout() {
               <ProbeLogo className="h-4 w-4" />
             </div>
             Probe
-          </NavLink>
+          </Link>
 
           <nav className="flex items-center gap-1">
             <NavLink

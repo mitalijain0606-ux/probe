@@ -13,17 +13,28 @@ import { Button } from '@/components/ui/button';
 import { ProbeLogo } from '@/components/probe-logo';
 import { Reveal } from '@/components/reveal';
 import { AnimatedArrow } from '@/components/animated-arrow';
+import { useAuth } from '@/features/auth/auth-context';
 
 function NavBar() {
+  const { user } = useAuth();
+
+  const handleLogoClick = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <header className="sticky top-0 z-40 border-b border-blue-100 bg-white/70 backdrop-blur-xl">
       <div className="container flex h-16 items-center justify-between">
-        <a href="#top" className="flex items-center gap-2 font-semibold tracking-tight text-slate-900">
+        <Link
+          to="/"
+          onClick={handleLogoClick}
+          className="flex items-center gap-2 font-semibold tracking-tight text-slate-900 cursor-pointer"
+        >
           <div className="flex h-7 w-7 items-center justify-center rounded-md bg-blue-600 text-white">
             <ProbeLogo className="h-4 w-4" />
           </div>
           Probe
-        </a>
+        </Link>
         <nav className="hidden items-center gap-8 text-sm text-slate-500 md:flex">
           <a href="#features" className="relative py-1 transition-all duration-200 hover:text-blue-600 active:scale-95 group">
             Features
@@ -45,15 +56,26 @@ function NavBar() {
           </a>
         </nav>
         <div className="flex items-center gap-3">
-          <Link to="/login" className="hidden text-sm font-medium text-slate-500 hover:text-slate-900 sm:block">
-            Sign in
-          </Link>
-          <Button asChild size="sm" className="group bg-blue-600 text-white hover:bg-blue-700">
-            <Link to="/register">
-              Start monitoring
-              <AnimatedArrow />
-            </Link>
-          </Button>
+          {user ? (
+            <Button asChild size="sm" className="bg-blue-600 text-white hover:bg-blue-700">
+              <Link to="/dashboard">
+                Go to Dashboard
+                <AnimatedArrow />
+              </Link>
+            </Button>
+          ) : (
+            <>
+              <Link to="/login" className="hidden text-sm font-medium text-slate-500 hover:text-slate-900 sm:block">
+                Sign in
+              </Link>
+              <Button asChild size="sm" className="group bg-blue-600 text-white hover:bg-blue-700">
+                <Link to="/register">
+                  Start monitoring
+                  <AnimatedArrow />
+                </Link>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </header>
@@ -168,13 +190,21 @@ const STEPS = [
 ];
 
 function FooterBar() {
+  const handleScrollTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
   return (
     <footer className="border-t border-blue-100 py-10">
       <div className="container flex flex-col items-center justify-between gap-4 text-sm text-slate-400 sm:flex-row">
-        <div className="flex items-center gap-2 font-medium text-slate-600">
+        <Link
+          to="/"
+          onClick={handleScrollTop}
+          className="flex items-center gap-2 font-medium text-slate-600 hover:text-blue-600 transition-colors cursor-pointer"
+        >
           <ProbeLogo className="h-4 w-4" />
           Probe
-        </div>
+        </Link>
         <p>URL health & observability, built to catch failures before your users do.</p>
       </div>
     </footer>
@@ -182,6 +212,8 @@ function FooterBar() {
 }
 
 export function LandingPage() {
+  const { user } = useAuth();
+
   return (
     <div id="top" className="min-h-screen bg-gradient-to-b from-sky-50 via-blue-50/60 to-white text-slate-900">
       <NavBar />
@@ -206,20 +238,31 @@ export function LandingPage() {
               they happen — not after a user tells you first.
             </p>
             <div className="mt-8 flex flex-col gap-3 sm:flex-row">
-              <Button asChild size="lg" className="group bg-blue-600 text-white transition-transform hover:bg-blue-700 hover:scale-[1.03] active:scale-95">
-                <Link to="/register">
-                  Start monitoring free
-                  <AnimatedArrow />
-                </Link>
-              </Button>
-              <Button
-                asChild
-                size="lg"
-                variant="outline"
-                className="border-blue-200 bg-white/60 text-slate-700 transition-transform hover:bg-white hover:scale-[1.03] active:scale-95"
-              >
-                <Link to="/login">Sign in</Link>
-              </Button>
+              {user ? (
+                <Button asChild size="lg" className="group bg-blue-600 text-white transition-transform hover:bg-blue-700 hover:scale-[1.03] active:scale-95">
+                  <Link to="/dashboard">
+                    Go to Dashboard
+                    <AnimatedArrow />
+                  </Link>
+                </Button>
+              ) : (
+                <>
+                  <Button asChild size="lg" className="group bg-blue-600 text-white transition-transform hover:bg-blue-700 hover:scale-[1.03] active:scale-95">
+                    <Link to="/register">
+                      Start monitoring free
+                      <AnimatedArrow />
+                    </Link>
+                  </Button>
+                  <Button
+                    asChild
+                    size="lg"
+                    variant="outline"
+                    className="border-blue-200 bg-white/60 text-slate-700 transition-transform hover:bg-white hover:scale-[1.03] active:scale-95"
+                  >
+                    <Link to="/login">Sign in</Link>
+                  </Button>
+                </>
+              )}
             </div>
             <div className="mt-10 flex items-center gap-6 text-xs text-slate-400">
               <span>No credit card required</span>

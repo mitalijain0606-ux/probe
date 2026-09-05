@@ -13,20 +13,45 @@ interface AuthContextValue {
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-  const [user, setUser] = useState<User | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(() => {
+    const saved = localStorage.getItem('uho_user');
+    try {
+      return saved ? JSON.parse(saved) : null;
+    } catch {
+      return null;
+    }
+  });
+  const [isLoading, setIsLoading] = useState(!user && !!localStorage.getItem('uho_token'));
 
   useEffect(() => {
     const token = localStorage.getItem('uho_token');
     if (!token) {
       setIsLoading(false);
+      setUser(null);
+      localStorage.removeItem('uho_user');
       return;
     }
     authService
       .me()
-      .then(setUser)
-      .catch(() => {
-        localStorage.removeItem('uho_token');
+      .then((freshUser) => {
+        setUser(freshUser);
+        localStorage.setItem('uho_user', JSON.stringify(freshUser));
+      })
+      .catch((err: any) => {
+        const isAuthError =
+          err?.response?.status === 401 ||
+          err?.status === 401 ||
+          err?.message?.toLowerCase().includes('401') ||
+          err?.message?.toLowerCase().includes('unauthorized') ||
+          err?.message?.toLowerCase().includes('jwt') ||
+          err?.message?.toLowerCase().includes('token') ||
+          err?.message?.toLowerCase().includes('invalid');
+
+        if (isAuthError) {
+          localStorage.removeItem('uho_token');
+          localStorage.removeItem('uho_user');
+          setUser(null);
+        }
       })
       .finally(() => setIsLoading(false));
   }, []);
@@ -34,18 +59,21 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = useCallback(async (email: string, password: string) => {
     const { user: loggedInUser, token } = await authService.login({ email, password });
     localStorage.setItem('uho_token', token);
+    localStorage.setItem('uho_user', JSON.stringify(loggedInUser));
     setUser(loggedInUser);
   }, []);
 
   const register = useCallback(async (name: string, email: string, password: string) => {
     const { user: registeredUser, token } = await authService.register({ name, email, password });
     localStorage.setItem('uho_token', token);
+    localStorage.setItem('uho_user', JSON.stringify(registeredUser));
     setUser(registeredUser);
   }, []);
 
   const logout = useCallback(async () => {
     await authService.logout().catch(() => undefined);
     localStorage.removeItem('uho_token');
+    localStorage.removeItem('uho_user');
     setUser(null);
   }, []);
 

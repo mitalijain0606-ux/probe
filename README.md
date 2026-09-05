@@ -6,6 +6,36 @@ Built as a Round 2 internship assignment.
 
 ---
 
+## 🌐 Live Deployments
+
+| Component | Platform | Status | URL |
+|---|---|:---:|---|
+| **Frontend Web App** | Vercel | 🟢 Active | [https://probe-frontend-nr8j.vercel.app](https://probe-frontend-nr8j.vercel.app) |
+| **Backend REST & WS API** | Render | 🟢 Active | [https://probe-backend-3v0d.onrender.com](https://probe-backend-3v0d.onrender.com) |
+| **System Health Check** | Render | 🟢 Active | [https://probe-backend-3v0d.onrender.com/health](https://probe-backend-3v0d.onrender.com/health) |
+
+### 🔑 Demo Accounts for Reviewers
+- **Standard User**: `demo@urlwatch.dev` / `Password123` *(or register any new account)*
+- **Admin User**: `admin@urlwatch.dev` / `Admin@123` *(unlocks the Admin Dashboard with system-wide analytics and cross-account URL oversight)*
+
+---
+
+## 📸 Screenshots & UI Tour
+
+### 1. Landing Page (`/`)
+*Clean, responsive landing page showcasing key features, observability benefits, reliability overview, and instant call-to-actions.*
+![Probe Landing Page](screenshots/01-landing-page.png)
+
+### 2. User Dashboard (`/dashboard`)
+*Individual tenant dashboard displaying high-level health cards (Total URLs, Up, Down, Uptime %), live Socket.IO update status ("Live · updated Xs ago"), active URL monitors with HTTP status codes and response times, manual check triggers, and delete actions. Also supports bulk JSON upload.*
+![User Dashboard](screenshots/02-dashboard.png)
+
+### 3. Admin Overview Dashboard (`/admin`)
+*Role-Based Access Control (RBAC) view accessible exclusively to administrators. Displays global platform-wide statistics (total registered users, total monitored endpoints across all tenants, global uptime %, down counts) and an aggregated table showing URL ownership by user.*
+![Admin Overview Dashboard](screenshots/03-admin-page.png)
+
+---
+
 ## 1. Problem Statement
 
 Teams that depend on external APIs, internal services, or third-party integrations usually find out something is broken when a user complains, not before. "Is this endpoint up right now, and has it been reliable this week?" is a question most small teams answer by pinging things manually or waiting for an incident.
@@ -279,9 +309,9 @@ npm install
 npm run dev                       # UI on :5173
 ```
 
-Seeded demo login: `demo@urlwatch.dev` / `Password123`.
-
-To try admin-only views, promote a user's role to `ADMIN` directly in Postgres (`UPDATE users SET role = 'ADMIN' WHERE email = '...'`), then log out and back in — the JWT bakes in the role at login time, so a stale session won't reflect the change until you re-authenticate.
+Seeded demo logins:
+- Standard user: `demo@urlwatch.dev` / `Password123`
+- Admin user: `admin@urlwatch.dev` / `Admin@123` (unlocks `/admin` and platform-wide monitoring)
 
 ## 20. Docker Setup
 
@@ -354,3 +384,15 @@ Frontend: `cd frontend && npm run typecheck && npm run lint && npm run build` (c
 Probe itself is intentionally domain-agnostic — it monitors HTTP endpoints, not patients. The relevance is architectural: healthcare technology platforms typically depend on a wide mesh of external and internal APIs — insurance eligibility checks, lab result feeds, e-prescribing networks, identity verification, payment processors. When one of those integrations degrades or goes down, the downstream clinical or administrative workflow that depends on it is affected, often silently, until a person notices something isn't working.
 
 The pattern this project demonstrates — continuous concurrent health checking, structured failure classification, historical latency tracking, and real-time alerting surface (including proactive email alerts on sustained failure) — is the same pattern that gives an engineering team the reliability visibility needed to detect a degraded integration before it becomes a support ticket, and to have response-time history on hand when diagnosing why. This is offered as contextual relevance for why the underlying engineering skills transfer, not as a claim about any specific internal system.
+
+## 28. AI Usage
+
+AI assistance (Claude, via Claude Code) was used throughout this project's development for:
+
+- **Architecture brainstorming** — working through the bounded in-process job queue design, deciding where to put the SSRF guard in the request lifecycle, and how to keep the uptime formula in exactly one place.
+- **Implementation assistance** — writing out the module boundaries (controller/service/repository) consistently across five backend modules, and the corresponding React feature-slice structure on the frontend.
+- **Debugging** — diagnosing a Zod env-schema failure where empty-string environment variables (from a `.env` file with unset optional keys) failed `coerce.number()`/`min(1)` validation, and fixing it with a shared `optionalString()` preprocessor.
+- **Edge-case identification** — enumerating the specific IPv4/IPv6 ranges an SSRF guard needs to block (including the commonly-missed IPv4-mapped IPv6 and cloud metadata link-local range), and the specific Node/undici error codes that map to each error classification.
+- **Documentation** — this README.
+
+All architectural decisions, tradeoffs, and the final code were reviewed and are understood by the author; AI did not autonomously design the system or validate its own output without review — typecheck, lint, and the full test suite were run and their actual output (not a description of expected output) is what's reported in Section 22.

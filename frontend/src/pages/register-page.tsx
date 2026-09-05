@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -12,9 +12,15 @@ import { Label } from '@/components/ui/label';
 import { ProbeLogo } from '@/components/probe-logo';
 
 export function RegisterPage() {
-  const { register: registerUser } = useAuth();
+  const { register: registerUser, user, isLoading } = useAuth();
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (!isLoading && user) {
+      navigate('/dashboard', { replace: true });
+    }
+  }, [user, isLoading, navigate]);
 
   const {
     register,
@@ -26,7 +32,7 @@ export function RegisterPage() {
     setIsSubmitting(true);
     try {
       await registerUser(values.name, values.email, values.password);
-      navigate('/dashboard');
+      navigate('/dashboard', { replace: true });
     } catch (error) {
       toast.error(error instanceof Error ? error.message : 'Registration failed');
     } finally {
@@ -52,9 +58,9 @@ export function RegisterPage() {
 
         <div className="rounded-2xl border border-blue-100 bg-white/80 p-8 shadow-2xl shadow-blue-200/50 backdrop-blur-xl">
           <div className="mb-8 flex flex-col items-center gap-2">
-            <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-white">
+            <Link to="/" className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-white transition-transform hover:scale-105" title="Go to home">
               <ProbeLogo className="h-5 w-5" />
-            </div>
+            </Link>
             <h1 className="text-xl font-semibold text-slate-900">Create your account</h1>
             <p className="text-sm text-slate-500">Start monitoring URLs in under a minute</p>
           </div>

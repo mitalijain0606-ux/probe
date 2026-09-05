@@ -23,7 +23,8 @@ export function useSocket(): void {
     const token = localStorage.getItem('uho_token');
     if (!token) return;
 
-    const socket = io('/', {
+    const socketBaseUrl = import.meta.env.VITE_API_URL || 'https://probe-backend-3v0d.onrender.com';
+    const socket = io(socketBaseUrl, {
       path: '/socket.io',
       auth: { token },
       withCredentials: true,

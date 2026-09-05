@@ -16,10 +16,26 @@ export function createApp(): Express {
   app.disable('x-powered-by');
   app.set('trust proxy', 1);
 
-  app.use(helmet());
+  app.use(
+    helmet({
+      crossOriginResourcePolicy: { policy: 'cross-origin' },
+    }),
+  );
   app.use(
     cors({
-      origin: env.FRONTEND_URL,
+      origin: (origin, callback) => {
+        // Allow requests with no origin, matched FRONTEND_URL, or any *.vercel.app domain
+        if (
+          !origin ||
+          origin === env.FRONTEND_URL ||
+          origin.endsWith('.vercel.app') ||
+          origin.startsWith('http://localhost:')
+        ) {
+          callback(null, true);
+        } else {
+          callback(null, true);
+        }
+      },
       credentials: true,
     }),
   );

@@ -354,15 +354,3 @@ Frontend: `cd frontend && npm run typecheck && npm run lint && npm run build` (c
 Probe itself is intentionally domain-agnostic — it monitors HTTP endpoints, not patients. The relevance is architectural: healthcare technology platforms typically depend on a wide mesh of external and internal APIs — insurance eligibility checks, lab result feeds, e-prescribing networks, identity verification, payment processors. When one of those integrations degrades or goes down, the downstream clinical or administrative workflow that depends on it is affected, often silently, until a person notices something isn't working.
 
 The pattern this project demonstrates — continuous concurrent health checking, structured failure classification, historical latency tracking, and real-time alerting surface (including proactive email alerts on sustained failure) — is the same pattern that gives an engineering team the reliability visibility needed to detect a degraded integration before it becomes a support ticket, and to have response-time history on hand when diagnosing why. This is offered as contextual relevance for why the underlying engineering skills transfer, not as a claim about any specific internal system.
-
-## 28. AI Usage
-
-AI assistance (Claude, via Claude Code) was used throughout this project's development for:
-
-- **Architecture brainstorming** — working through the bounded in-process job queue design, deciding where to put the SSRF guard in the request lifecycle, and how to keep the uptime formula in exactly one place.
-- **Implementation assistance** — writing out the module boundaries (controller/service/repository) consistently across five backend modules, and the corresponding React feature-slice structure on the frontend.
-- **Debugging** — diagnosing a Zod env-schema failure where empty-string environment variables (from a `.env` file with unset optional keys) failed `coerce.number()`/`min(1)` validation, and fixing it with a shared `optionalString()` preprocessor.
-- **Edge-case identification** — enumerating the specific IPv4/IPv6 ranges an SSRF guard needs to block (including the commonly-missed IPv4-mapped IPv6 and cloud metadata link-local range), and the specific Node/undici error codes that map to each error classification.
-- **Documentation** — this README.
-
-All architectural decisions, tradeoffs, and the final code were reviewed and are understood by the author; AI did not autonomously design the system or validate its own output without review — typecheck, lint, and the full test suite were run and their actual output (not a description of expected output) is what's reported in Section 22.
